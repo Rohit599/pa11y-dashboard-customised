@@ -1,71 +1,181 @@
 {{!
-This file is part of Pa11y Dashboard.
+	This file is part of Pa11y Dashboard.
 
-Pa11y Dashboard is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+	Pa11y Dashboard is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-Pa11y Dashboard is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+	Pa11y Dashboard is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Pa11y Dashboard.  If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License
+	along with Pa11y Dashboard.  If not, see <http://www.gnu.org/licenses/>.
 }}
-<div class="col-md-12 task-card clearfix">
-	<button class="btn view-btn btn-grid btn-default"><i class="glyphicon glyphicon-th"></i> Grid</button>
-	<button class="btn view-btn btn-list"><i class="glyphicon glyphicon-align-justify "></i> List</button>
+<div class="container">
+	<div class="col-md-4 col-sm-6 task-card">
+	</div>
+	<div class="row">
 
-</div>
-<ul class="list-unstyled clearfix crunch-bottom" id="grid-container">
-
-	{{#unless readonly}}
-		<li class="col-md-4 col-sm-6 task-card add-task">
-			<a class="well task-card-link crunch-bottom" data-role="add-task" href="/new" data-test="add-task">
-				<p class="h3 crunch">Add new URL</p>
-				<p class="supersize-me crunch">+</p>
-			</a>
-		</li>
-	{{/unless}}
-	{{#each tasks}}
-		<li class="col-md-4 col-sm-6 task-card" data-test="task" data-role="task" data-keywords="{{lowercase name}} {{lowercase standard}} {{simplify-url url}}">
-			<a class="well task-card-link crunch-bottom" title="Details for URL {{simplify-url url}}" href="{{href}}">
+		<div class="col-md-5 col-sm-6 col-xs-9 pull-right">
+			<ul class="list-unstyled floated-list series-checkboxes clearfix" data-role="series-checkboxes"></ul>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4 col-sm-6 task-card">
+			<a class="well task-card-link crunch-bottom" title="Details for Cumulative Data" style="background-color: #001CB0">
 				<div class="gridview">
-					<p class="h3">{{name}}</p>
-					<p class="h4">{{simplify-url url}}</p>
-					<p class="h5">({{standard}})</p>
+					<p class="h3" style="color: #FFFFFF !important;">Cumulative issues today</p>
+					<p class="h5" style="color: #FFFFFF !important;">(WCAG2AA)</p>
 				</div>
 
-				{{#if lastResult}}
+				{{#if total}}
 				<div class="gridview">
 					<ul class="clearfix list-unstyled floated-list task-stats">
-						{{#lastResult}}
-							<li class="danger" title="Number of errors ({{count.error}})">{{count.error}}<span class="stat-type">Errors</span></li>
-							<li class="warning" title="Number of warnings ({{count.warning}})">{{count.warning}}<span class="stat-type">Warnings</span></li>
-							<li class="info last" title="Number of notices ({{count.notice}})">{{count.notice}}<span class="stat-type">Notices</span></li>
-						{{/lastResult}}
+						<li class="danger" title="Number of errors ({{total.errors}})">{{total.errors}}<span class="stat-type">Errors</span></li>
+						<li class="warning" title="Number of warnings ({{total.warnings}})">{{total.warnings}}<span class="stat-type">Warnings</span></li>
+						<li class="info last" title="Number of notices ({{total.notices}})">{{total.notices}}<span class="stat-type">Notices</span></li>
 					</ul>
 				</div>
-				<div class="last-run">Last run {{date-format lastResult.date format="DD MMM YYYY"}}</div>
-				{{else}}
-					<p class="no-results">No results</p>
+				<div class="last-run" style="color: #FFFFFF !important;">Last run {{date-format total.date format="DD MMM YYYY"}}</div>
 				{{/if}}
 			</a>
 			{{#unless ../readonly}}
-				<div class="btn-group options-button text-right">
-					<button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><span class="sr-only">Options</span><span class="glyphicon glyphicon-cog"></span></button>
-					<nav aria-label="task tools">
-						<ul class="dropdown-menu pull-right">
-							<li><a href="{{href}}/edit">Edit this task</a></li>
-							<li><a href="{{href}}/delete">Delete this task</a></li>
-							<li class="divider"></li>
-							<li><a href="{{href}}/run" data-test="run-task">Run Pa11y</a></li>
-						</ul>
-					</nav>
-				</div>
+			<div class="btn-group options-button text-right">
+				<button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><span class="sr-only">Options</span><span class="glyphicon glyphicon-cog"></span></button>
+				<nav aria-label="task tools">
+					<ul class="dropdown-menu pull-right">
+						<li><a href="{{href}}/edit">Edit this task</a></li>
+						<li><a href="{{href}}/delete">Delete this task</a></li>
+						<li class="divider"></li>
+						<li><a href="{{href}}/run" data-test="run-task">Run Pa11y</a></li>
+					</ul>
+				</nav>
+			</div>
 			{{/unless}}
-		</li>
+		</div>
+		<div class="col-md-8 col-sm-6 clearfix">
+			<div class="graph-container graph-spacer ruled clearfix">
+				
+				<div data-role="graph" class="graph" style="height: 210px;"></div>
+				<div class="dashedLegend">
+					<div class="dashedContainer">
+					    <table>
+					        <tbody>
+					            <tr>
+					                <td class="legendColorBox">
+					                    <div class="clearfix legendIcon legendErrors">
+					                        <div></div>
+					                    </div>
+					                </td>
+					                <td class="legendLabel">Errors</td>
+					            </tr>
+					            <tr>
+					                <td class="legendColorBox">
+					                    <div class="clearfix legendIcon legendWarnings">
+					                        <div></div><div></div>
+					                    </div>
+					                </td>
+					                <td class="legendLabel">Warnings</td>
+					            </tr>
+					            <tr>
+					                <td class="legendColorBox">
+					                    <div class="clearfix legendIcon legendNotices">
+					                        <div></div><div></div><div></div>
+					                    </div>
+					                </td>
+					                <td class="legendLabel">Notices</td>
+					            </tr>
+					        </tbody>
+					    </table>
+					</div>
+				</div>
+				<button data-role='zoom-reset' class="btn btn-xs btn-primary pull-right btn-reset hidden">Reset Zoom <i class="glyphicon glyphicon-zoom-out"></i></button>
+			</div>
+		</div>
+
+		<div class="col-md-12 hidden">
+			<div class="graph-spacer ruled">
+				<table id="graph-data" class="table graph-table" summary="Accessibility results from Pa11y for this page">
+					<caption>Pa11y results for this URL</caption>
+					<thead>
+						<tr>
+							<th>Date</th>
+							<th class="text-center">Errors</th>
+							<th class="text-center">Warnings</th>
+							<th class="text-center">Notices</th>
+						</tr>
+					</thead>
+					<tbody>
+					{{#results}}
+						<tr data-role="url-stats">
+							<td data-value="{{date-timestamp date}}" data-role="date">{{date-format date format="DD MMM YYYY"}}</td>
+							<td class="text-center" data-label="error">{{error}}</td>
+							<td class="text-center" data-label="warning">{{warning}}</td>
+							<td class="text-center" data-label="notice">{{notice}}</td>
+						</tr>
+					{{/results}}
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
+</div>
+<!-- <div class="col-md-12 task-card clearfix">
+	<button class="btn view-btn btn-grid btn-default"><i class="glyphicon glyphicon-th"></i> Grid</button>
+	<button class="btn view-btn btn-list"><i class="glyphicon glyphicon-align-justify "></i> List</button>
+
+</div> -->
+<ul class="list-unstyled clearfix crunch-bottom" id="grid-container">
+
+	{{#unless readonly}}
+	<li class="col-md-4 col-sm-6 task-card add-task">
+		<a class="well task-card-link crunch-bottom" data-role="add-task" href="/new" data-test="add-task">
+			<p class="h3 crunch">Add new URL</p>
+			<p class="supersize-me crunch">+</p>
+		</a>
+	</li>
+	{{/unless}}
+	{{#each tasks}}
+	<li class="col-md-4 col-sm-6 task-card" data-test="task" data-role="task" data-keywords="{{lowercase name}} {{lowercase standard}} {{simplify-url url}}">
+		<a class="well task-card-link crunch-bottom" title="Details for URL {{simplify-url url}}" href="{{href}}">
+			<div class="gridview">
+				<p class="h3">{{name}}</p>
+				<p class="h4">{{simplify-url url}}</p>
+				<p class="h5">({{standard}})</p>
+			</div>
+
+			{{#if lastResult}}
+			<div class="gridview">
+				<ul class="clearfix list-unstyled floated-list task-stats">
+					{{#lastResult}}
+					<li class="danger" title="Number of errors ({{count.error}})">{{count.error}}<span class="stat-type">Errors</span></li>
+					<li class="warning" title="Number of warnings ({{count.warning}})">{{count.warning}}<span class="stat-type">Warnings</span></li>
+					<li class="info last" title="Number of notices ({{count.notice}})">{{count.notice}}<span class="stat-type">Notices</span></li>
+					{{/lastResult}}
+				</ul>
+			</div>
+			<div class="last-run">Last run {{date-format lastResult.date format="DD MMM YYYY"}}</div>
+			{{else}}
+			<p class="no-results">No results</p>
+			{{/if}}
+		</a>
+		{{#unless ../readonly}}
+		<div class="btn-group options-button text-right">
+			<button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown"><span class="sr-only">Options</span><span class="glyphicon glyphicon-cog"></span></button>
+			<nav aria-label="task tools">
+				<ul class="dropdown-menu pull-right">
+					<li><a href="{{href}}/edit">Edit this task</a></li>
+					<li><a href="{{href}}/delete">Delete this task</a></li>
+					<li class="divider"></li>
+					<li><a href="{{href}}/run" data-test="run-task">Run Pa11y</a></li>
+				</ul>
+			</nav>
+		</div>
+		{{/unless}}
+	</li>
 	{{/each}}
 </ul>

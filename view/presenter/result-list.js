@@ -21,7 +21,7 @@ module.exports = presentResultList;
 
 function presentResultList(results) {
 	const resultsByDay = _.groupBy(results, result => {
-		return moment(result.date).format('YYYY-MM-DD');
+		return moment(result.date).format('YYYY-MM-DD')+result.task;
 	});
 	const uniqueDayResults = [];
 	_.keys(resultsByDay).forEach(day => {

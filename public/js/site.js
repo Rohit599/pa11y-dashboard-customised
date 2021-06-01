@@ -14,8 +14,10 @@
 // along with Pa11y Dashboard.  If not, see <http://www.gnu.org/licenses/>.
 
 $(document).ready(function(){
+    console.log('HI');
 
     var data = {};
+    // console.log(data);
 	var standardsList = $('[data-role="standards-list"]');
 	var standardSelect = $('[data-role="new-task-select"]');
     var taskListSelector = $('[data-role="task-list"] a');
@@ -178,6 +180,7 @@ $(document).ready(function(){
     }
 
     function getData() {
+        // console.log(data.error);
         return [
             {
                 color: 'rgb(216, 61, 45)',
